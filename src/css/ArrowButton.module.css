@@ -1,0 +1,12 @@
+.arrow_button {
+  display: block;
+  height: min-content;
+  background: none;
+  width: 35px;
+  padding: 0;
+}
+
+.arrow_button_icon {
+  vertical-align: middle;
+  fill: var(--font-color-main);
+}

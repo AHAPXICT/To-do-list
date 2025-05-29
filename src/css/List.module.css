@@ -1,0 +1,61 @@
+.main {
+  display: flex;
+  padding: 50px;
+  flex-direction: column;
+}
+
+.add_todo_main {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.todo_input {
+  background: none;
+}
+
+.add_todo_text {
+  padding: 5px 10px;
+  width: 100%;
+}
+
+.add_time_container {
+  display: flex;
+}
+
+.add_time_start {
+
+}
+
+.add_time_end {
+
+}
+
+.add_todo_button {
+  background: var(--note-background-color);
+  font-size: 1.5rem;
+  border-radius: var(--note-border-radius);
+  aspect-ratio: 1/1;
+}
+
+.todo_list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin: 20px 0;
+}
+
+
+@media (hover: hover) {
+  .add_todo_button:hover, .add_todo_button:focus {
+    background-color: var(--text-hint-color);
+    color: var(--note-background-color);
+  }
+}
+.add_todo_button:active {
+  background-color: #287f28;
+}
+.add_todo_button {
+
+}

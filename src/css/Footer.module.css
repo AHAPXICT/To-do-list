@@ -1,0 +1,9 @@
+.footer {
+  position: fixed;
+  display: flex;
+  flex-direction: row;
+  background-color: var(--background-color-secondary);
+  height: 50px;
+  width: 100%;
+  bottom: 0;
+}

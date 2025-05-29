@@ -1,0 +1,83 @@
+.todo {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--note-background-color);
+  border-radius: var(--note-border-radius);
+  width: 100%;
+  min-height: 50px;
+  overflow-wrap: anywhere;
+  padding: 0 10px;
+}
+
+.todo_left_container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.todo_text {
+  padding: 10px;
+}
+
+.checkbox_label  {
+  display: flex;
+  flex-wrap: wrap;
+}
+.todo_text_complete  {
+  text-decoration: line-through;
+  color: hsl(109, 100%, 60%);
+}
+.todo_complete {
+  /*background-color: var(--note-completed-background-color);*/
+  opacity: 0.7;
+}
+/* Стилизация чекбокса */
+.todo_checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 1rem;
+  height: 1rem;
+  border: 1px solid #0d6efd;
+  border-radius: 0.25rem;
+  background-color: #ffff;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  margin: 0;
+}
+
+/* Оформление состояния checked */
+.todo_checkbox:checked {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e");
+}
+
+/* Эффект нажатия */
+.todo_checkbox:active {
+  filter: brightness(90%);
+}
+
+/* Смена цвета границы при наведении */
+.todo_checkbox:hover:not(:disabled) {
+  border-color: #287f28;
+}
+
+/* Стили для чекбокса при фокусе */
+.todo_checkbox:focus {
+  border-color: #0d6efd;
+  outline: none;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Отключенный чекбокс */
+.todo_checkbox:disabled {
+  filter: none;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.todo_checkbox:disabled ~ .checkbox_label {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
