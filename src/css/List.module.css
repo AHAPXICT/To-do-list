@@ -34,16 +34,17 @@
 
 .add_todo_button {
   background: var(--note-background-color);
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   border-radius: var(--note-border-radius);
   aspect-ratio: 1/1;
+  box-shadow: var(--main-shadow);
 }
 
 .todo_list {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  margin: 20px 0;
+  margin: 40px 0;
 }
 
 
@@ -55,7 +56,4 @@
 }
 .add_todo_button:active {
   background-color: #287f28;
-}
-.add_todo_button {
-
 }

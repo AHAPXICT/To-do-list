@@ -9,6 +9,8 @@
   min-height: 50px;
   overflow-wrap: anywhere;
   padding: 0 10px;
+  box-shadow: var(--main-shadow);
+  font-size: 1.1rem;
 }
 
 .todo_left_container {
@@ -27,7 +29,7 @@
 }
 .todo_text_complete  {
   text-decoration: line-through;
-  color: hsl(109, 100%, 60%);
+  color: var(--todo-complete-color);
 }
 .todo_complete {
   /*background-color: var(--note-completed-background-color);*/

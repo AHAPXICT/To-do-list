@@ -3,7 +3,8 @@
   grid-template-columns: repeat(3, 1fr);
   align-items: center;
   background-color: var(--background-color-secondary);
-  height: 50px;
+  height: 60px;
+  box-shadow: var(--main-shadow);
 }
 
 
@@ -42,6 +43,7 @@
   overflow: clip;
   background-color: var(--search-bar-background-color);
   padding: 2px 8px;
+  box-shadow: var(--second-shadow);
 }
 
 .search_bar_input {
@@ -58,4 +60,17 @@
 }
 .theme_button {
   background: none;
+  color: unset;
+  display: flex;
+  align-items: center;
+  padding: 0;
+}
+.theme_icon {
+  transition: opacity var(--main-transition-time) ease;
+  /*top: 0;*/
+  /*position: absolute;*/
+}
+.theme_icon_disabled {
+  opacity: 0;
+  position: absolute;
 }
