@@ -1,7 +1,5 @@
 import styles from '../css/Header.module.css'
 import ArrowButton from "./ArrowButton.tsx";
-import lightIcon from "../icon/theme-day.svg"
-import darkIcon from "../icon/theme-night.svg"
 import {
   selectTheme,
   setDarkThemeAction,

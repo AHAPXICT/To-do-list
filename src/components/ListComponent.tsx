@@ -2,22 +2,32 @@ import TodoComponent from "./TodoComponent.tsx";
 import {useRef, useState} from "react";
 import styles from "../css/List.module.css"
 import styles2 from "../css/Todo.module.css"
+import {store, useAppDispatch, useAppSelector} from "../store.ts";
+import {Todo, todosSlice} from "../todos.slice.ts";
+
+let todo: Todo
 
 export default function ListComponent() {
-  const [todos, setTodos] = useState(['SampleComponent']);
-  const [todoName, setTodoName] = useState("");
+  const [todoText, setTodoText] = useState("");
   const textInputRef = useRef<HTMLInputElement>(null);
+
+  const dispatch = useAppDispatch()
+
+  const todos = useAppSelector(todosSlice.selectors.selectTodos)
+  const selectedListId = useAppSelector(todosSlice.selectors.selectSelectedListId)
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    if (todoName.length < 1) {
+    if (todoText.length < 1) {
       console.log(null, 'Enter note header')
       return;
     }
 
-    setTodos([...todos, todoName])
-    setTodoName("")
+    const id = Object.values(store.getState().todos.lists[selectedListId].todos).length
+    todo = {id: id, text: todoText, isDone: false, timeStart: null, timeEnd: null}
+    dispatch(todosSlice.actions.newTodo({todo: todo}))
+    setTodoText("")
     textInputRef.current?.focus()
   }
 
@@ -28,8 +38,8 @@ export default function ListComponent() {
         <div className={styles2.todo}>
           <input ref={textInputRef}
                  className={`${styles.add_todo_text} ${styles.todo_input}`}
-                 type='text' value={todoName} placeholder="Enter To-Do name"
-                 onChange={(e) => setTodoName(e.target.value)} />
+                 type='text' value={todoText} placeholder="Enter To-Do name"
+                 onChange={(e) => setTodoText(e.target.value)} />
           <div className={styles.add_time_container}>
             <input className={`${styles.add_time_start} ${styles.todo_input}`}
                    type='time'
@@ -42,7 +52,7 @@ export default function ListComponent() {
         <button className={styles.add_todo_button} type="submit">+</button>
       </form>
       <div className={styles.todo_list}>
-        {todos.map((s, key) => (<TodoComponent key={key} todoText={s} id={key} />))}
+        {todos.map((_, i) => (<TodoComponent key={i} id={i} />))}
       </div>
     </main>
   )

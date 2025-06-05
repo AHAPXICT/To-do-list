@@ -1,6 +1,6 @@
-import { createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {createSelector, createSlice, PayloadAction} from "@reduxjs/toolkit";
 
-export type TodoId = string;
+export type TodoId = number;
 export type Todo = {
     id: TodoId;
     text: string;
@@ -9,74 +9,56 @@ export type Todo = {
     timeEnd: Date | null,
 }
 
-export type ListId = string
+export type ListId = number
+export type ListDate = number
 export type TodoList = {
     id: ListId,
     todos: Record<TodoId, Todo>,
-    date: Date,
-    isPassed: boolean
+    date: ListDate,
 }
 
 type TodosState = {
     lists: Record<ListId, TodoList>;
     ids: ListId[];
-    selectedListId: ListId | undefined;
+    selectedListId: ListId;
 };
-
-// export const initialUsersList: User[] = Array.from(
-//   { length: 3000 },
-//   (_, index) => ({
-//     id: `user${index + 11}`,
-//     name: `User ${index + 11}`,
-//     description: `Description for User ${index + 11}`,
-//   })
-// );
 
 const initialTodosState: TodosState = {
-    lists: {},
+    lists: {0: {id: 0, date: Date.now(), todos: []}},
     ids: [],
-    selectedListId: undefined,
+    selectedListId: 0,
 };
+const selectedId = (state: TodosState) => state.selectedListId;
+const lists = (state: TodosState) => state.lists;
 
 export const todosSlice = createSlice({
-    name: "todoLists",
+    name: "todos",
     initialState: initialTodosState,
     selectors: {
-        selectSelectedUserId: (state) => state.selectedListId,
-        // selectSortedUsers: createSelector(
-        //   (state: UsersState) => state.ids,
-        //   (state: UsersState) => state.entities,
-        //   (_: UsersState, sort: "asc" | "desc") => sort,
-        //   (ids, entities, sort) =>
-        //     ids
-        //       .map((id) => entities[id])
-        //       .sort((a, b) => {
-        //         if (sort === "asc") {
-        //           return a.name.localeCompare(b.name);
-        //         } else {
-        //           return b.name.localeCompare(a.name);
-        //         }
-        //       })
-        // ),
-        // selectTodo: (state) => createSelector(
-        //
-        // )
+        selectSelectedListId: (state: TodosState) => state.selectedListId,
+        // selectTodos: (state) => Object.values(state.lists[state.selectedListId].todos),
+        selectTodos: createSelector(
+            [lists, selectedId],
+            (lists, selectedId) => Object.values(lists[selectedId]?.todos)),
+        selectTodo: createSelector(
+            [lists, selectedId, (_: TodosState, todoId: TodoId) => todoId],
+            (lists, selectedId, id) => lists[selectedId]?.todos[id]
+        )
     },
+
     reducers: {
-        selected: (state, action: PayloadAction<{ userId: UserId }>) => {
-            state.selectedListId = action.payload.userId;
+        selected: (state, action: PayloadAction<{ listId: ListId }>) => {
+            state.selectedListId = action.payload.listId;
         },
-        // stored: (state, action: PayloadAction<{ users: User[] }>) => {
-        //     const {users} = action.payload;
-        //
-        //     state.entities = users.reduce((acc, user) => {
-        //         acc[user.id] = user;
-        //         return acc;
-        //     }, {} as Record<UserId, User>);
-        //     state.ids = users.map((user) => user.id);
-        // },
+        newList: (state, action: PayloadAction<{ listId: ListId, date: ListDate }>) => {
+            state.lists[action.payload.listId] = {id: action.payload.listId, todos: [], date: action.payload.date};
+        },
         newTodo: (state, action: PayloadAction<{ todo: Todo }>) => {
-            state.entities[action.payload.todo.id] = action.payload.todo;
+            state.lists[state.selectedListId].todos[action.payload.todo.id] = action.payload.todo;
+        },
+        switchIsDone: (state, action: PayloadAction<{ todoId: TodoId }>) => {
+            state.lists[state.selectedListId].todos[action.payload.todoId].isDone = !state.lists[state.selectedListId].todos[action.payload.todoId].isDone
         }
+
     },
 });
