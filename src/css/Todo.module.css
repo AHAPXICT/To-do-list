@@ -27,6 +27,15 @@
   display: flex;
   flex-wrap: wrap;
 }
+
+
+.time_container {
+  display: flex;
+}
+.time_element {
+  padding: 0 5px;
+}
+
 .todo_text_complete  {
   text-decoration: line-through;
   color: var(--todo-complete-color);

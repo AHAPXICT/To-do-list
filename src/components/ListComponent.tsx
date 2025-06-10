@@ -1,59 +1,82 @@
 import TodoComponent from "./TodoComponent.tsx";
-import {useRef, useState} from "react";
 import styles from "../css/List.module.css"
 import styles2 from "../css/Todo.module.css"
 import {store, useAppDispatch, useAppSelector} from "../store.ts";
 import {Todo, todosSlice} from "../todos.slice.ts";
+import {FieldValues, useForm} from "react-hook-form";
 
 let todo: Todo
 
 export default function ListComponent() {
-  const [todoText, setTodoText] = useState("");
-  const textInputRef = useRef<HTMLInputElement>(null);
+    const dispatch = useAppDispatch()
 
-  const dispatch = useAppDispatch()
+    const todos = useAppSelector(todosSlice.selectors.selectTodos)
+    const selectedListId = useAppSelector(todosSlice.selectors.selectSelectedListId)
 
-  const todos = useAppSelector(todosSlice.selectors.selectTodos)
-  const selectedListId = useAppSelector(todosSlice.selectors.selectSelectedListId)
+    const {
+        register,
+        handleSubmit,
+        formState: {errors},
+        setValue,
+        setFocus,
+        getValues,
+    } = useForm();
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-
-    if (todoText.length < 1) {
-      console.log(null, 'Enter note header')
-      return;
+    function handleSubmitF(data: FieldValues) {
+        const id = Object.values(store.getState().todos.lists[selectedListId].todos).length
+        todo = {id: id, text: data.todoText, isDone: false, timeStart: data.timeStart, timeEnd: data.timeEnd}
+        dispatch(todosSlice.actions.newTodo({todo: todo}))
+        setValue("todoText", "")
+        setFocus("todoText")
     }
 
-    const id = Object.values(store.getState().todos.lists[selectedListId].todos).length
-    todo = {id: id, text: todoText, isDone: false, timeStart: null, timeEnd: null}
-    dispatch(todosSlice.actions.newTodo({todo: todo}))
-    setTodoText("")
-    textInputRef.current?.focus()
-  }
+    function validateTime(value: string): string | boolean {
+        const timeS = getValues("timeStart").split(":")
+        const timeE = value.split(":")
 
-  return (
-    <main className={styles.main}>
-      <h2>List</h2>
-      <form className={styles.add_todo_main} onSubmit={handleSubmit}>
-        <div className={styles2.todo}>
-          <input ref={textInputRef}
-                 className={`${styles.add_todo_text} ${styles.todo_input}`}
-                 type='text' value={todoText} placeholder="Enter To-Do name"
-                 onChange={(e) => setTodoText(e.target.value)} />
-          <div className={styles.add_time_container}>
-            <input className={`${styles.add_time_start} ${styles.todo_input}`}
-                   type='time'
-                   value={Date()}></input>
-            <input className={`${styles.add_time_end} ${styles.todo_input}`}
-                   type='time'
-                   value={Date()}></input>
-          </div>
-        </div>
-        <button className={styles.add_todo_button} type="submit">+</button>
-      </form>
-      <div className={styles.todo_list}>
-        {todos.map((_, i) => (<TodoComponent key={i} id={i} />))}
-      </div>
-    </main>
-  )
+        const timeStart = Number(timeS[0]) * 60 + Number(timeS[1])
+        const timeEnd = Number(timeE[0]) * 60 + Number(timeE[1])
+
+        console.log(timeS, timeE, timeStart, timeEnd)
+
+        if (isNaN(timeStart) || isNaN(timeEnd)) {
+            return true
+        }
+        return timeStart <= timeEnd ? true : "timeStart can't be more than timeEnd"
+    }
+
+    return (
+        <main className={styles.main}>
+            <h2>List</h2>
+            <form className={styles.add_todo_main} onSubmit={handleSubmit((data) => handleSubmitF(data))}>
+                <div className={styles2.todo}>
+                    <input {...register("todoText", {
+                        required: {value: true, message: "To-do text can't be empty"},
+                        maxLength: {value: 256, message: "Max length of to-do text is 256"},
+                    })}
+                           className={`${styles.add_todo_text} ${styles.todo_input}`}
+                           type='text'
+                           placeholder="Enter To-Do text "
+                           spellCheck="true"
+                    />
+                    <div className={styles2.time_container}>
+                        <input {...register("timeStart")}
+                               className={`${styles2.time_element} ${styles.todo_input}`}
+                               type='time' />
+                        <input {...register("timeEnd", {validate: (value) => validateTime(value)})}
+                               className={`${styles2.time_element} ${styles.todo_input}`}
+                               type='time' />
+                    </div>
+                </div>
+                <button className={styles.add_todo_button} type="submit">+</button>
+            </form>
+            <div className={styles.errors_container}>
+                <span className={styles.error_message}>{errors.todoText?.message?.toString()}</span>
+                <span className={styles.error_message}>{errors.timeEnd?.message?.toString()}</span>
+            </div>
+            <div className={styles.todo_list}>
+                {todos.map((_, i) => <TodoComponent key={i} id={i} />)}
+            </div>
+        </main>
+    )
 }

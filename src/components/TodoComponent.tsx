@@ -9,7 +9,7 @@ export default function TodoComponent({id}: {id: number}) {
     const dispatch = useAppDispatch();
     const [isKeyFree, setIsKeyFree] = useState(false)
 
-    function handleKeyDown(e: KeyboardEvent) {
+    function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
         if (isKeyFree && e.key === "Enter") {
             setIsKeyFree(false)
             // todo.isDone = !todo.isDone
@@ -18,7 +18,7 @@ export default function TodoComponent({id}: {id: number}) {
 
     }
 
-    function handleKeyUp(e) {
+    function handleKeyUp() {
         setIsKeyFree(true)
     }
 
@@ -26,19 +26,21 @@ export default function TodoComponent({id}: {id: number}) {
         <div
             className={`${styles.todo} ${todo.isDone ? styles.todo_complete : ''}`}>
             <div className={styles.todo_left_container}>
-                <label className={styles.checkbox_label}>
+                <div className={styles.checkbox_label}>
                     <input checked={todo.isDone}
                            onChange={() => dispatch(todosSlice.actions.switchIsDone({todoId: id}))
                     } className={styles.todo_checkbox}
                            onKeyDownCapture={(e) => handleKeyDown(e)}
                            onKeyUp={handleKeyUp}
                            type="checkbox" />
-                </label>
+                </div>
                 <label
                     className={`${styles.todo_text} ${todo.isDone ? styles.todo_text_complete : ''}`}>{todo.text}</label>
             </div>
-            <span className="note__start-time"></span>
-            <span className="note__end-time"></span>
+            <div className={styles.time_container}>
+                <span className={styles.time_element}>{todo.timeStart}</span>
+                <span className={styles.time_element}>{todo.timeEnd}</span>
+            </div>
         </div>
     )
 }
