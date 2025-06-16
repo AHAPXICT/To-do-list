@@ -4,7 +4,7 @@
   background-color: var(--background-color-main);
   color: var(--font-color-main);
   font-size: var(--font-size);
-  font-family: "Ubuntu-reg", sans-serif;
+  font-family: Ubuntu-reg, sans-serif;
   transition: background-color var(--main-transition-time) ease,
   color var(--main-transition-time) ease;
 }

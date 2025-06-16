@@ -1,6 +1,6 @@
 import styles from "../css/ArrowButton.module.css";
-import {store, useAppDispatch} from "../store.ts";
-import {todosSlice} from "../todos.slice.ts";
+import {store, useAppDispatch} from "../model/store.ts";
+import {todosSlice} from "../model/todos.slice.ts";
 
 export default function ArrowButton({rotation = 0}: { rotation?: number }) {
     const dispatch = useAppDispatch()

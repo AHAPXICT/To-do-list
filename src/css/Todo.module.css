@@ -31,26 +31,35 @@
 
 .time_container {
   display: flex;
+  align-items: center;
 }
+
 .time_element {
   padding: 0 5px;
 }
 
+.delete_button {
+  display: flex;
+  align-items: center;
+  background: none;
+}
+
 .todo_text_complete  {
   text-decoration: line-through;
-  color: var(--todo-complete-color);
+  color: var(--secondary-color);
 }
+
 .todo_complete {
-  /*background-color: var(--note-completed-background-color);*/
   opacity: 0.7;
 }
+
 /* Стилизация чекбокса */
 .todo_checkbox {
   appearance: none;
-  -webkit-appearance: none;
+  appearance: none;
   width: 1rem;
   height: 1rem;
-  border: 1px solid #0d6efd;
+  border: 1px solid var(--secondary-color);
   border-radius: 0.25rem;
   background-color: #ffff;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
@@ -78,17 +87,5 @@
 .todo_checkbox:focus {
   border-color: #0d6efd;
   outline: none;
-  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-}
-
-/* Отключенный чекбокс */
-.todo_checkbox:disabled {
-  filter: none;
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.todo_checkbox:disabled ~ .checkbox_label {
-  opacity: 0.5;
-  cursor: not-allowed;
+  box-shadow: 0 0 0 0.25rem rgb(13 110 253 / 25%);
 }

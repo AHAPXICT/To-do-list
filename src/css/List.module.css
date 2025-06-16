@@ -32,8 +32,9 @@
   margin: 5px 0;
   min-height: calc(var(--line-height) * var(--font-size));
 }
+
 .error_message:not(:empty) {
-  color: #d3346b;
+  color: var(--secondary-color);
   margin: 0 12px;
   font-size: 0.95rem;
 }
@@ -57,6 +58,7 @@
     color: var(--note-background-color);
   }
 }
+
 .add_todo_button:active {
   background-color: #287f28;
 }

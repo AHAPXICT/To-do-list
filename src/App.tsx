@@ -4,7 +4,7 @@ import ListComponent from './components/ListComponent.tsx'
 import Header from "./components/Header.tsx";
 import Footer from "./components/Footer.tsx";
 import {useDispatch} from "react-redux";
-import {setLightThemeAction} from "./store.ts";
+import {setLightThemeAction} from "./model/store.ts";
 
 export default function App() {
 

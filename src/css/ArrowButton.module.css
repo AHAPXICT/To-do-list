@@ -8,5 +8,5 @@
 
 .arrow_button_icon {
   vertical-align: middle;
-  fill: var(--font-color-main);
+  fill: var(--secondary-color);
 }

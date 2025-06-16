@@ -4,10 +4,10 @@ import {
     selectTheme,
     setDarkThemeAction,
     setLightThemeAction, store, useAppSelector
-} from "../store.ts";
+} from "../model/store.ts";
 import {useDispatch, useSelector} from "react-redux";
 import {Theme} from "../model/Theme.ts";
-import {TodoList, todosSlice} from "../todos.slice.ts";
+import {TodoList, todosSlice} from "../model/todos.slice.ts";
 
 export default function Header() {
     const dispatch = useDispatch();

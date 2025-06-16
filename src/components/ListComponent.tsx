@@ -1,8 +1,8 @@
 import TodoComponent from "./TodoComponent.tsx";
 import styles from "../css/List.module.css"
 import styles2 from "../css/Todo.module.css"
-import {store, useAppDispatch, useAppSelector} from "../store.ts";
-import {Todo, todosSlice} from "../todos.slice.ts";
+import {useAppDispatch, useAppSelector} from "../model/store.ts";
+import {Todo, todosSlice} from "../model/todos.slice.ts";
 import {FieldValues, useForm} from "react-hook-form";
 
 let todo: Todo
@@ -11,7 +11,7 @@ export default function ListComponent() {
     const dispatch = useAppDispatch()
 
     const todos = useAppSelector(todosSlice.selectors.selectTodos)
-    const selectedListId = useAppSelector(todosSlice.selectors.selectSelectedListId)
+    const id = useAppSelector(todosSlice.selectors.selectLastTodoId) + 1
 
     const {
         register,
@@ -23,7 +23,6 @@ export default function ListComponent() {
     } = useForm();
 
     function handleSubmitF(data: FieldValues) {
-        const id = Object.values(store.getState().todos.lists[selectedListId].todos).length
         todo = {id: id, text: data.todoText, isDone: false, timeStart: data.timeStart, timeEnd: data.timeEnd}
         dispatch(todosSlice.actions.newTodo({todo: todo}))
         setValue("todoText", "")
@@ -36,8 +35,6 @@ export default function ListComponent() {
 
         const timeStart = Number(timeS[0]) * 60 + Number(timeS[1])
         const timeEnd = Number(timeE[0]) * 60 + Number(timeE[1])
-
-        console.log(timeS, timeE, timeStart, timeEnd)
 
         if (isNaN(timeStart) || isNaN(timeEnd)) {
             return true
@@ -56,15 +53,15 @@ export default function ListComponent() {
                     })}
                            className={`${styles.add_todo_text} ${styles.todo_input}`}
                            type='text'
-                           placeholder="Enter To-Do text "
+                           placeholder="Enter To-Do text"
                            spellCheck="true"
                     />
                     <div className={styles2.time_container}>
                         <input {...register("timeStart")}
-                               className={`${styles2.time_element} ${styles.todo_input}`}
+                               className={`${styles.todo_input}`}
                                type='time' />
                         <input {...register("timeEnd", {validate: (value) => validateTime(value)})}
-                               className={`${styles2.time_element} ${styles.todo_input}`}
+                               className={`${styles.todo_input}`}
                                type='time' />
                     </div>
                 </div>
@@ -74,8 +71,8 @@ export default function ListComponent() {
                 <span className={styles.error_message}>{errors.todoText?.message?.toString()}</span>
                 <span className={styles.error_message}>{errors.timeEnd?.message?.toString()}</span>
             </div>
-            <div className={styles.todo_list}>
-                {todos.map((_, i) => <TodoComponent key={i} id={i} />)}
+            <div className={styles.todo_list} >
+                {todos.map((todo) => <TodoComponent key={todo.id} id={todo.id} />)}
             </div>
         </main>
     )

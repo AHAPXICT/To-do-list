@@ -1,4 +1,5 @@
 import {createSelector, createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {Theme} from "./Theme.ts";
 
 export type TodoId = number;
 export type Todo = {
@@ -19,19 +20,45 @@ export type TodoList = {
 
 type TodosState = {
     lists: Record<ListId, TodoList>;
-    ids: ListId[];
     selectedListId: ListId;
     selectedListDate: ListDate;
 };
 
 const nowDate = new Date().setUTCHours(0, 0, 0, 0);
 
-const initialTodosState: TodosState = {
-    lists: {0: {id: 0, date: nowDate, todos: []}},
-    ids: [],
-    selectedListId: 0,
-    selectedListDate: nowDate
-};
+//Retrieve data from localStorage
+function loadFromLocalStorage() {
+    try {
+        const serialisedState = localStorage.getItem("persistentState");
+        if (serialisedState === null) return undefined;
+        return JSON.parse(serialisedState);
+    } catch (e) {
+        console.warn(e);
+        return undefined;
+    }
+}
+
+const newInitialState = {
+    themeReducer: {theme: Theme.DARK}, todos: {
+        lists: {0: {id: 0, date: nowDate, todos: []}},
+        selectedListId: 0,
+        selectedListDate: nowDate
+    }
+}
+
+const localData = loadFromLocalStorage()
+const initialStoreState = localData === undefined ? newInitialState : localData
+
+
+// const initialTodosState: TodosState = {
+//     lists: {0: {id: 0, date: nowDate, todos: []}},
+//     selectedListId: 0,
+//     selectedListDate: nowDate
+// };
+
+const initialTodosState: TodosState = initialStoreState.todos
+//End of retrieve data
+
 const selectedId = (state: TodosState) => state.selectedListId;
 const lists = (state: TodosState) => state.lists;
 
@@ -41,14 +68,31 @@ export const todosSlice = createSlice({
     selectors: {
         selectSelectedListId: (state: TodosState) => state.selectedListId,
         selectSelectListDate: (state: TodosState) => state.selectedListDate,
-        // selectTodos: (state) => Object.values(state.lists[state.selectedListId].todos),
+
+        selectLastTodoId: (state: TodosState) => {
+            const todos = Object.values(state.lists[state.selectedListId].todos)
+            if (todos.length === 0) {
+                return -1;
+            }
+            return todos[todos.length - 1].id
+        },
+
         selectTodos: createSelector(
             [lists, selectedId],
             (lists, selectedId) => Object.values(lists[selectedId]?.todos)),
         selectTodo: createSelector(
             [lists, selectedId, (_: TodosState, todoId: TodoId) => todoId],
             (lists, selectedId, id) => lists[selectedId]?.todos[id]
-        )
+        ),
+        selectTotalTodos: createSelector(
+            [lists, selectedId],
+            (lists, selectedId) => Object.values(lists[selectedId]?.todos).length
+        ),
+        selectCompletedTodos: createSelector(
+            [lists, selectedId],
+            (lists, selectedId) =>
+                Object.values(lists[selectedId].todos).filter(todo => todo.isDone).length
+        ),
     },
 
     reducers: {
@@ -64,7 +108,10 @@ export const todosSlice = createSlice({
         },
         switchIsDone: (state, action: PayloadAction<{ todoId: TodoId }>) => {
             state.lists[state.selectedListId].todos[action.payload.todoId].isDone = !state.lists[state.selectedListId].todos[action.payload.todoId].isDone
+        },
+        deleteTodo: (state, action: PayloadAction<{ todoId: TodoId }>) => {
+            const { [action.payload.todoId]: _, ...newRecords } = state.lists[state.selectedListId].todos;
+            state.lists[state.selectedListId].todos = newRecords;
         }
-
     },
 });
